@@ -1,6 +1,9 @@
 package com.example.User.UserController;
 
+import com.example.User.CustomException.UserNotFoundException;
+import com.example.User.DTO.UserDTO;
 import com.example.User.Entity.User;
+import com.example.User.Response.UserResponse;
 import com.example.User.UserService.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,30 +23,36 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) {
-      try {
-          if (userServiceImpl.isUserExist(user)) {
-              return ResponseEntity.status(HttpStatus.CONFLICT).body("User with this emailId already exists");
-          }
-          User userPost = userServiceImpl.saveUser(user);
-          URI location = URI.create("/user/" + userPost.getUserId());
+        UserDTO userPost = userServiceImpl.saveUser(user);
+        URI location = URI.create("/user/" + userPost.getUserId());
           HttpHeaders headers = new HttpHeaders();
           headers.setLocation(location);
-          return new ResponseEntity<>(userPost, headers, HttpStatus.CREATED);
-      }catch(IllegalArgumentException e){
-          return  ResponseEntity.badRequest().body("Invalid Input : "+e.getMessage());
-      }catch(Exception e){
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Creating User");
-      }
+        UserResponse userResponse = new UserResponse("User Created Successfully",userPost);
+        return new ResponseEntity<>(userResponse, headers, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{userId}")
-    public User getByUserId(@PathVariable String userId) {
-        User user = userServiceImpl.getUser(userId);
-        return user;
+    public ResponseEntity<?> getByUserId(@PathVariable String userId) {
+        UserDTO user = userServiceImpl.getUser(userId);
+        UserResponse userResponse = new UserResponse("Details for " + userId + " are : ", user);
+        return  new ResponseEntity<>(userResponse,HttpStatus.OK);
     }
     @GetMapping("/user")
-    public List<User>getAllUser(){
-        List<User> users = userServiceImpl.getAllUser();
-        return users;
+    public ResponseEntity<?> getAllUser(){
+        List<UserDTO> users = userServiceImpl.getAllUser();
+        UserResponse userResponse = new UserResponse("List of all Users",users);
+        return new ResponseEntity<>(userResponse,HttpStatus.OK);
+    }
+    @PatchMapping("user/{userId}")
+    public ResponseEntity<?>updateUser(@PathVariable String userId,@RequestBody User updatedUser){
+      try{
+          UserDTO userDTO = userServiceImpl.updateUser(userId, updatedUser);
+          UserResponse userResponse = new UserResponse("User Update Successfully",userDTO);
+          return new ResponseEntity<>(userResponse, HttpStatus.OK);
+      }catch(UserNotFoundException ex){
+              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+      }catch(Exception ex){
+          return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Updating User");
+      }
     }
 }

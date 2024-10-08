@@ -1,12 +1,13 @@
 package com.example.User.UserService;
 
+import com.example.User.DTO.UserDTO;
 import com.example.User.Entity.User;
 
 import java.util.List;
 
 public interface UserService {
-    User getUser(String userId);
-    User saveUser(User user);
-    List<User> getAllUser();
-    boolean isUserExist(User user);
+    UserDTO getUser(String userId);
+    UserDTO saveUser(User user);
+    List<UserDTO> getAllUser();
+//    boolean isUserExist(User user);
 }
