@@ -1,5 +1,6 @@
 package com.example.User.UserService;
 
+import com.example.User.CustomException.UserNotFoundException;
 import com.example.User.Entity.User;
 import com.example.User.UserRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUser(String userId) {
         Optional<User>user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            throw new UserNotFoundException("The UserId : "+userId+" : is not available");
+        }
         return user.get();
     }
 
