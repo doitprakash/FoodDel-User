@@ -28,4 +28,9 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+    @Override
+    public boolean isUserExist(User user) {
+        return userRepository.existsByEmailId(user.getEmailId())||userRepository.existsByUsername(user.getUsername());
+    }
+
 }

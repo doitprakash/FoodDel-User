@@ -8,4 +8,5 @@ public interface UserService {
     User getUser(String userId);
     User saveUser(User user);
     List<User> getAllUser();
+    boolean isUserExist(User user);
 }
