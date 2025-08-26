@@ -31,6 +31,12 @@ public class UserController {
         return new ResponseEntity<>(userResponse, headers, HttpStatus.CREATED);
     }
 
+    @PostMapping("/api/users/bulk")
+    public ResponseEntity<List<UserDTO>> createUsers(@RequestBody List<User> users) {
+        List<UserDTO> savedUsers = userServiceImpl.saveAll(users);
+        return ResponseEntity.ok(savedUsers);
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getByUserId(@PathVariable String userId) {
         UserDTO user = userServiceImpl.getUser(userId);

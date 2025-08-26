@@ -48,7 +48,17 @@ public class UserServiceImpl implements UserService{
         return DTOlist;
     }
 
-   public UserDTO updateUser(String userId,User updateUser){
+    @Override
+    public List<UserDTO> saveAll(List<User> users) {
+        List<User> users1 = userRepository.saveAll(users);
+        List<UserDTO> DTOlist = new ArrayList<>();
+        for( User user:users1){
+            DTOlist.add(UserMapper.toUserDTO(user));
+        }
+        return DTOlist;
+    }
+
+    public UserDTO updateUser(String userId,User updateUser){
        User existingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Not Found"));
        if(updateUser.getName()!=null){
                 existingUser.setName(updateUser.getName());
