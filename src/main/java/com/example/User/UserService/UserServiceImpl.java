@@ -28,12 +28,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO saveUser(User user) {
-        if(userRepository.existsById(user.getUserId())){
-            throw new UserAlreadyExistsException("User with : "+user.getUserId()+" already exists");
-        }
-        if(userRepository.existsByEmailId(user.getEmailId())||userRepository.existsByUsername(user.getUsername())){
+        if(userRepository.existsByEmailId(user.getEmailId()) || userRepository.existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistsException("User with this email or username already exists");
         }
+
+        // Find the highest existing ID and increment
+        String lastId = userRepository.findMaxUserId(); // e.g. "U017"
+        int nextNumber = (lastId == null) ? 1 : Integer.parseInt(lastId.substring(1)) + 1;
+        String nextId = String.format("U%03d", nextNumber);
+        user.setUserId(nextId);
+
         User saved = userRepository.save(user);
         return UserMapper.toUserDTO(saved);
     }

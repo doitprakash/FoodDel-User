@@ -2,12 +2,14 @@ package com.example.User.Entity;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class User {
     @Id
-    //@Entity()
+
     private String userId ;
     private String name;
     private String address;

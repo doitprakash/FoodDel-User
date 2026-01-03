@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -43,8 +44,8 @@ public class UserController {
         UserResponse userResponse = new UserResponse("Details for " + userId + " are : ", user);
         return  new ResponseEntity<>(userResponse,HttpStatus.OK);
     }
-    @GetMapping("/user")
-    public ResponseEntity<?> getAllUser(){
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers(){
         List<UserDTO> users = userServiceImpl.getAllUser();
         UserResponse userResponse = new UserResponse("List of all Users",users);
         return new ResponseEntity<>(userResponse,HttpStatus.OK);
